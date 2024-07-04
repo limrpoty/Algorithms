@@ -104,7 +104,7 @@ impl Graph {
         }
     }
 
-    pub fn dijkstra(&mut self, source: usize) {
+    pub fn dijkstra(&mut self, source: usize, destination: usize) {
         self.distances[source] = 0;
         let mut min_heap = BinaryHeap::new();
         min_heap.push(VertexDistance { vertex: source, distance: 0 });
@@ -114,6 +114,12 @@ impl Graph {
                 continue;
             }
             self.visited[vertex] = true;
+
+            if vertex == destination {
+                println!("From vertex {} to vertex {} is: {}", self.vertex[source], self.vertex[destination], distance);
+                self.reset();
+                return;
+            }
 
             for neighbor in 0..self.vertex_count {
                 if self.adjacency_matrix[vertex][neighbor] > 0 && !self.visited[neighbor] {
@@ -126,20 +132,11 @@ impl Graph {
             }
         }
 
-        println!("Shortest distances from vertex {}:", self.vertex[source]);
-        for (i, &dist) in self.distances.iter().enumerate() {
-            if i == self.vertex_count {
-                break;
-            } else {
-                if dist == i32::MAX {
-                    println!("{}: Unreachable", self.vertex[i]);
-                } else {
-                    println!("{}: {}", self.vertex[i], dist);
-                }
-            }
-            
-        }
-        
+        println!("There's no connection between vertex {} and vertex {}!", self.vertex[destination], self.vertex[source]);
+        self.reset();
+    }
+
+    fn reset(&mut self) {
         self.visited.iter_mut().for_each(|v| *v = false);
         self.distances.iter_mut().for_each(|d| *d = i32::MAX);
     }

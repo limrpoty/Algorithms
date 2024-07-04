@@ -15,12 +15,13 @@ fn main() {
         println!("0. Exit");
         println!("Option: ");
         let option: usize = read!();
-
+        std::process::Command::new("clear").status().unwrap();
 
         match option {
             1 => {
                 graphs = Graph::new();
-                graphs.add_edges()
+                graphs.add_edges();
+                std::process::Command::new("clear").status().unwrap();
             },
             2 => {
                 graphs.print_graph();
@@ -33,9 +34,11 @@ fn main() {
                 println!("\nEdge value: {}", graphs.get_edge(source, destination));
             },
             5 => {
-                println!("Enter the index of the source vertex (0 to {}):", graphs.vertex_count- 1);
+                println!("Enter the index of the source vertex:");
                 let source: usize = read!();
-                graphs.dijkstra(source);
+                println!("Enter the index of the destination:");
+                let destination: usize = read!();
+                graphs.dijkstra(source, destination);
             },
             0 => {
                 println!("\nThanks for using my program!");
