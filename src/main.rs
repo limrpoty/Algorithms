@@ -1,4 +1,5 @@
 mod graph;
+
 use graph::*;
 use text_io::read;
 
@@ -10,6 +11,7 @@ fn main() {
         println!("2. Print graph");
         println!("3. Set a new edge value");
         println!("4. Print an edge value");
+        println!("5. Dijkstra");
         println!("0. Exit");
         println!("Option: ");
         let option: usize = read!();
@@ -29,6 +31,11 @@ fn main() {
                 let source: usize = read!();
                 let destination: usize = read!();
                 println!("\nEdge value: {}", graphs.get_edge(source, destination));
+            },
+            5 => {
+                println!("Enter the index of the source vertex (0 to {}):", graphs.vertex_count- 1);
+                let source: usize = read!();
+                graphs.dijkstra(source);
             },
             0 => {
                 println!("\nThanks for using my program!");

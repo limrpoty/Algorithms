@@ -1,10 +1,39 @@
 use text_io::read;
+use std::collections::BinaryHeap;
+use std::cmp::Ordering;
+
 const MAX_VERTEX: usize = 20;
 
 pub struct Graph {
     vertex: Vec<char>,
     adjacency_matrix: [[i32; MAX_VERTEX]; MAX_VERTEX],
-    vertex_count: usize,
+    pub vertex_count: usize,
+    distances: Vec<i32>,
+    visited: Vec<bool>
+}
+
+#[derive(Eq)]
+struct VertexDistance {
+    vertex: usize,
+    distance: i32,
+}
+
+impl PartialEq for VertexDistance {
+    fn eq(&self, other: &Self) -> bool {
+        self.distance == other.distance
+    }
+}
+
+impl Ord for VertexDistance {
+    fn cmp(&self, other: &Self) -> Ordering {
+        other.distance.cmp(&self.distance)
+    }
+}
+
+impl PartialOrd for VertexDistance {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
 }
 
 impl Graph {
@@ -13,6 +42,8 @@ impl Graph {
             vertex: Vec::new(),
             adjacency_matrix: [[0; MAX_VERTEX]; MAX_VERTEX],
             vertex_count: 0,
+            distances: vec![i32::MAX; MAX_VERTEX],
+            visited: vec![false; MAX_VERTEX]
         }
     }
 
@@ -44,7 +75,7 @@ impl Graph {
 
     fn vertex_creation(&mut self) {
         for i in 0..self.vertex_count {
-            let vertex = std::char::from_u32(('a' as u32) + i as u32).unwrap();
+            let vertex = std::char::from_u32(('A' as u32) + i as u32).unwrap();
             self.vertex.push(vertex);
         }
     }
@@ -71,5 +102,45 @@ impl Graph {
             }
             println!();
         }
+    }
+
+    pub fn dijkstra(&mut self, source: usize) {
+        self.distances[source] = 0;
+        let mut min_heap = BinaryHeap::new();
+        min_heap.push(VertexDistance { vertex: source, distance: 0 });
+
+        while let Some(VertexDistance { vertex, distance }) = min_heap.pop() {
+            if self.visited[vertex] {
+                continue;
+            }
+            self.visited[vertex] = true;
+
+            for neighbor in 0..self.vertex_count {
+                if self.adjacency_matrix[vertex][neighbor] > 0 && !self.visited[neighbor] {
+                    let new_distance = distance + self.adjacency_matrix[vertex][neighbor];
+                    if new_distance < self.distances[neighbor] {
+                        self.distances[neighbor] = new_distance;
+                        min_heap.push(VertexDistance { vertex: neighbor, distance: new_distance });
+                    }
+                }
+            }
+        }
+
+        println!("Shortest distances from vertex {}:", self.vertex[source]);
+        for (i, &dist) in self.distances.iter().enumerate() {
+            if i == self.vertex_count {
+                break;
+            } else {
+                if dist == i32::MAX {
+                    println!("{}: Unreachable", self.vertex[i]);
+                } else {
+                    println!("{}: {}", self.vertex[i], dist);
+                }
+            }
+            
+        }
+        
+        self.visited.iter_mut().for_each(|v| *v = false);
+        self.distances.iter_mut().for_each(|d| *d = i32::MAX);
     }
 }
