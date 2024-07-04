@@ -12,6 +12,7 @@ fn main() {
         println!("3. Set a new edge value");
         println!("4. Print an edge value");
         println!("5. Dijkstra");
+        println!("6. Kruskal");
         println!("0. Exit");
         println!("Option: ");
         let option: usize = read!();
@@ -40,6 +41,9 @@ fn main() {
                 let destination: usize = read!();
                 graphs.dijkstra(source, destination);
             },
+            6 => {
+                graphs.kruskal();
+            }
             0 => {
                 println!("\nThanks for using my program!");
                 break

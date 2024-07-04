@@ -18,6 +18,13 @@ struct VertexDistance {
     distance: i32,
 }
 
+#[derive(Eq, PartialEq, Clone)]
+struct Edge {
+    source: usize,
+    destination: usize,
+    value: i32
+}
+
 impl PartialEq for VertexDistance {
     fn eq(&self, other: &Self) -> bool {
         self.distance == other.distance
@@ -35,6 +42,19 @@ impl PartialOrd for VertexDistance {
         Some(self.cmp(other))
     }
 }
+
+impl Ord for Edge {
+    fn cmp(&self, other: &Self) -> Ordering {
+        other.value.cmp(&self.value)
+    }
+}
+
+impl PartialOrd for Edge {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
 
 impl Graph {
     pub fn new() -> Self {
@@ -139,5 +159,68 @@ impl Graph {
     fn reset(&mut self) {
         self.visited.iter_mut().for_each(|v| *v = false);
         self.distances.iter_mut().for_each(|d| *d = i32::MAX);
+    }
+
+    pub fn kruskal(&mut self) {
+        let mut edges: Vec<Edge> = Vec::new();
+
+        for i in 0..self.vertex_count {
+            for j in i + 1..self.vertex_count {
+                if self.adjacency_matrix[i][j] > 0 {
+                    edges.push(Edge {
+                        source: i,
+                        destination: j,
+                        value: self.adjacency_matrix[i][j],
+                    });
+                }
+            }
+        }
+
+        edges.sort();
+
+        let mut parent = (0..self.vertex_count).collect::<Vec<_>>();
+        let mut rank = vec![0; self.vertex_count];
+        
+        let mut mst = Vec::new();
+        let mut total_value = 0;
+
+        for edge in edges {
+            if Self::find(&mut parent, edge.source) != Self::find(&mut parent, edge.destination) {
+                Self::union(&mut parent, &mut rank, edge.source, edge.destination);
+                mst.push(edge.clone());
+                total_value += edge.value;
+            }
+        }
+
+        println!("\nMinimum Spanning Tree:");
+        for edge in mst {
+            println!("{} --> {} = {}", self.vertex[edge.source], self.vertex[edge.destination], edge.value
+            );
+        }
+
+        println!("Total weight of the MST: {}", total_value);
+    }
+
+    fn find(parent: &mut [usize], u: usize) -> usize {
+        if parent[u] != u {
+            parent[u] = Self::find(parent, parent[u]);
+        }
+        parent[u]
+    }
+
+    fn union(parent: &mut [usize], rank: &mut [usize], u: usize, v: usize) {
+        let root_u = Self::find(parent, u);
+        let root_v = Self::find(parent, v);
+
+        if root_u != root_v {
+            if rank[root_u] > rank[root_v] {
+                parent[root_v] = root_u;
+            } else if rank[root_u] < rank[root_v] {
+                parent[root_u] = root_v;
+            } else {
+                parent[root_v] = root_u;
+                rank[root_u] += 1;
+            }
+        }
     }
 }
