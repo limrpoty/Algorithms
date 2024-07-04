@@ -55,7 +55,6 @@ impl PartialOrd for Edge {
     }
 }
 
-
 impl Graph {
     pub fn new() -> Self {
         Graph {
@@ -83,7 +82,7 @@ impl Graph {
                 let source = source as usize;
                 let destination: usize = read!();
                 let value: i32 = read!();
-                if source < self.vertex_count && destination < self.vertex_count && self.get_edge(source, destination) == 0{
+                if source < self.vertex_count && destination < self.vertex_count && self.get_edge(source, destination) == 0 {
                     self.adjacency_matrix[source as usize][destination] = value;
                     self.adjacency_matrix[destination][source as usize] = value;
                 } else {
