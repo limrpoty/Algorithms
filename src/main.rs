@@ -1,5 +1,3 @@
-// Integrantes: Gabriel Rosa de O. Silva, Marcos Lima Alves
-
 mod graph;
 
 use graph::*;
@@ -19,6 +17,7 @@ fn main() {
         println!("Option: ");
         let option: usize = read!();
         std::process::Command::new("clear").status().unwrap();
+        
 
         match option {
             1 => {
@@ -26,13 +25,12 @@ fn main() {
                 graphs.add_edges();
                 std::process::Command::new("clear").status().unwrap();
             },
-            2 => {
-                graphs.print_graph();
-            },
+            2 => graphs.print_graph(),
             3 => graphs.set_edge(),
             4 => {
-                println!("\nType the vertex of the edge: ");
+                println!("\nType the vertex of the source edge: ");
                 let source: usize = read!();
+                println!("\nType the vertex of the destination edge: ");
                 let destination: usize = read!();
                 println!("\nEdge value: {}", graphs.get_edge(source, destination));
             },
@@ -46,7 +44,7 @@ fn main() {
             6 => graphs.kruskal(),
             0 => {
                 println!("Thanks for using my program!");
-                break
+                break;
             },
             _ => println!("\nInvalid option!\n"),
         }
