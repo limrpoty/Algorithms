@@ -1,3 +1,5 @@
+// Integrantes: Gabriel Rosa de O. Silva, Marcos Lima Alves
+
 mod graph;
 
 use graph::*;
@@ -41,11 +43,9 @@ fn main() {
                 let destination: usize = read!();
                 graphs.dijkstra(source, destination);
             },
-            6 => {
-                graphs.kruskal();
-            }
+            6 => graphs.kruskal(),
             0 => {
-                println!("\nThanks for using my program!");
+                println!("Thanks for using my program!");
                 break
             },
             _ => println!("\nInvalid option!\n"),

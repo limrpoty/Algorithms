@@ -9,7 +9,7 @@ pub struct Graph {
     adjacency_matrix: [[i32; MAX_VERTEX]; MAX_VERTEX],
     pub vertex_count: usize,
     distances: Vec<i32>,
-    visited: Vec<bool>
+    visited: Vec<bool>,
 }
 
 #[derive(Eq)]
@@ -22,7 +22,7 @@ struct VertexDistance {
 struct Edge {
     source: usize,
     destination: usize,
-    value: i32
+    value: i32,
 }
 
 impl PartialEq for VertexDistance {
@@ -45,7 +45,7 @@ impl PartialOrd for VertexDistance {
 
 impl Ord for Edge {
     fn cmp(&self, other: &Self) -> Ordering {
-        other.value.cmp(&self.value)
+        self.value.cmp(&other.value)
     }
 }
 
@@ -62,7 +62,7 @@ impl Graph {
             adjacency_matrix: [[0; MAX_VERTEX]; MAX_VERTEX],
             vertex_count: 0,
             distances: vec![i32::MAX; MAX_VERTEX],
-            visited: vec![false; MAX_VERTEX]
+            visited: vec![false; MAX_VERTEX],
         }
     }
 
@@ -193,8 +193,7 @@ impl Graph {
 
         println!("\nMinimum Spanning Tree:");
         for edge in mst {
-            println!("{} --> {} = {}", self.vertex[edge.source], self.vertex[edge.destination], edge.value
-            );
+            println!("{} --> {} = {}", self.vertex[edge.source], self.vertex[edge.destination], edge.value);
         }
 
         println!("Total weight of the MST: {}", total_value);
